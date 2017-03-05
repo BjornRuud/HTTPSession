@@ -41,7 +41,7 @@ class HTTPSessionTests: XCTestCase {
         
         return http
     }()
-    
+
     let basePath = "http://127.0.0.1:8080"
 
     func urlFor(path: String) -> URL {
@@ -52,19 +52,17 @@ class HTTPSessionTests: XCTestCase {
         let expect = expectation(description: "hello")
         let url = urlFor(path: "/hello")
         session.get(url) { result in
-            switch result {
-            case .failure(let error):
-                XCTFail(error.localizedDescription)
-            case .success(let type, _):
-                switch type {
-                case .data(let data):
-                    let text = String(data: data, encoding: .utf8)!
-                    XCTAssertEqual(text, "hello")
-                    expect.fulfill()
-                default:
-                    XCTFail()
-                }
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
             }
+            guard let (data, _) = result.data() else {
+                XCTFail()
+                return
+            }
+            let text = String(data: data, encoding: .utf8)!
+            XCTAssertEqual(text, "hello")
+            expect.fulfill()
         }
         waitForExpectations(timeout: 4)
     }

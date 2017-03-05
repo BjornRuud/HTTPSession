@@ -47,6 +47,46 @@ public enum HTTPResultDataType {
 public enum HTTPResult {
     case failure(Error)
     case success(HTTPResultDataType, HTTPURLResponse)
+
+    public func error() -> Error? {
+        switch self {
+        case .failure(let error):
+            return error
+        default:
+            return nil
+        }
+    }
+
+    public func data() -> (Data, HTTPURLResponse)? {
+        switch self {
+        case .success(let type, let response):
+            switch type {
+            case .data(let data):
+                return (data, response)
+            case .url(let url):
+                guard let data = try? Data(contentsOf: url, options: .alwaysMapped) else {
+                    return nil
+                }
+                return (data, response)
+            }
+        default:
+            return nil
+        }
+    }
+
+    public func url() -> (URL, HTTPURLResponse)? {
+        switch self {
+        case .success(let type, let response):
+            switch type {
+            case .data(_):
+                return nil
+            case .url(let url):
+                return (url, response)
+            }
+        default:
+            return nil
+        }
+    }
 }
 
 public final class HTTPSession: NSObject {
