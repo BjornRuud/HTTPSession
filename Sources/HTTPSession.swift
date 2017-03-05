@@ -147,6 +147,14 @@ public final class HTTPSession: NSObject {
     }
 
     @discardableResult
+    public func post(_ request: URLRequest, from data: Data, downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
+        var req = request
+        req.httpMethod = HTTPMethod.POST.rawValue
+
+        return sendUploadTask(request: req, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
+    }
+    
+    @discardableResult
     private func sendDownloadTask(
         request: URLRequest,
         downloadTo fileUrl: URL? = nil,
@@ -168,6 +176,7 @@ public final class HTTPSession: NSObject {
     private func sendUploadTask(
         request: URLRequest,
         from data: Data,
+        downloadTo fileUrl: URL? = nil,
         uploadProgress: UploadProgress? = nil,
         downloadProgress: DownloadProgress? = nil,
         completion: @escaping ResultCompletion) -> URLSessionUploadTask
@@ -177,6 +186,7 @@ public final class HTTPSession: NSObject {
         let handler = TaskHandler(completion: completion)
         handler.uploadProgress = uploadProgress
         handler.downloadProgress = downloadProgress
+        handler.url = fileUrl
         taskHandlers[task.taskIdentifier] = handler
         task.resume()
 

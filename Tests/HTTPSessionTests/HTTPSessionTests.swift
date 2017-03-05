@@ -33,8 +33,14 @@ class HTTPSessionTests: XCTestCase {
     let server: HttpServer = {
         let http = HttpServer()
 
-        http["/hello"] = { request in
+        http.GET["/hello"] = { request in
             return .ok(.text("hello"))
+        }
+
+        http.POST["/post"] = { r in
+            let data = Data(bytes: r.body)
+            var response = String(data: data, encoding: .utf8) ?? ""
+            return HttpResponse.ok(.text(response))
         }
 
         try? http.start()
@@ -106,6 +112,64 @@ class HTTPSessionTests: XCTestCase {
                 return
             }
             XCTAssertEqual(data.count, 0)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testPost() {
+        let expect = expectation(description: "post")
+        let url = urlFor(path: "/post")
+        let request = URLRequest(url: url)
+        session.post(request, from: "fooBar".data(using: .utf8)!) { (result) in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data() else {
+                XCTFail()
+                return
+            }
+            let text = String(data: data, encoding: .utf8)!
+            XCTAssertEqual(text, "fooBar")
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testUploadProgress() {
+        let expect = expectation(description: "post")
+        let url = urlFor(path: "/post")
+        let request = URLRequest(url: url)
+
+        var upCount: Int64 = 0
+        var upTotal: Int64 = 0
+        var downCount: Int64 = 0
+        var downTotal: Int64 = 0
+
+        let upData = "fooBar".data(using: .utf8)!
+
+        session.post(request, from: upData, uploadProgress: {
+            (bytesUploaded, totalBytesUploaded, totalBytesToUpload) in
+            upCount = totalBytesUploaded
+            upTotal = totalBytesToUpload
+        }, downloadProgress: {
+            (bytesDownloaded, totalBytesDownloaded, totalBytesToDownload) in
+            downCount = totalBytesDownloaded
+            downTotal = totalBytesToDownload
+        }) { (result) in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data() else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(upCount, upTotal)
+            XCTAssertEqual(upCount, Int64(upData.count))
+            XCTAssertEqual(downCount, downTotal)
+            XCTAssertEqual(downCount, Int64(data.count))
             expect.fulfill()
         }
         waitForExpectations(timeout: 4)
