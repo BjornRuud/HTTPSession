@@ -1,0 +1,12 @@
+PODS:
+  - Swifter (1.3.2)
+
+DEPENDENCIES:
+  - Swifter
+
+SPEC CHECKSUMS:
+  Swifter: dd1800ba8eb3e28b22b8bd20f91a8561a0110fac
+
+PODFILE CHECKSUM: 2d94d68770de64a6dfb16c90b7ad3929daa3b67a
+
+COCOAPODS: 1.2.0

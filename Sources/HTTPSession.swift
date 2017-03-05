@@ -65,16 +65,16 @@ final class HTTPSession: NSObject {
     init(config: URLSessionConfiguration? = nil) {
         super.init()
 
-        let config = config ?? URLSessionConfiguration.ephemeral
+        let config = config ?? URLSessionConfiguration.default
         self.session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }
 
     @discardableResult
-    func get(_ request: URLRequest, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionDownloadTask {
+    func get(_ request: URLRequest, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
         var req = request
         req.httpMethod = HTTPMethod.GET.rawValue
 
-        return sendDownloadTask(request: request, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
+        return sendDownloadTask(request: req, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
     }
 
     @discardableResult

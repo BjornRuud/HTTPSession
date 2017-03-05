@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		52D6D9871BEFF229002C0205 /* HTTPSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D97C1BEFF229002C0205 /* HTTPSession.framework */; };
+		6F7D2E622BF48C5831136CA3 /* Pods_HTTPSession_iOS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCA78D650CA827E5174BF1A0 /* Pods_HTTPSession_iOS_Tests.framework */; };
+		8A122B0BD966959998B859FB /* Pods_HTTPSession_tvOS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3579C99C3EC87AC45CCF4E0E /* Pods_HTTPSession_tvOS_Tests.framework */; };
 		8E0C36D61E6C387800CC21C6 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36D51E6C387800CC21C6 /* HTTPSession.swift */; };
 		8E0C36D71E6C387800CC21C6 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36D51E6C387800CC21C6 /* HTTPSession.swift */; };
 		8E0C36D81E6C387800CC21C6 /* HTTPSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36D51E6C387800CC21C6 /* HTTPSession.swift */; };
@@ -15,6 +17,7 @@
 		8E0C36DE1E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */; };
 		8E0C36DF1E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */; };
 		8E0C36E01E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */; };
+		D7440F6325B2F7C58085929B /* Pods_HTTPSession_macOS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 445E703123BC5142EFC81D93 /* Pods_HTTPSession_macOS_Tests.framework */; };
 		DD7502881C68FEDE006590AF /* HTTPSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* HTTPSession.framework */; };
 		DD7502921C690C7A006590AF /* HTTPSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D9F01BEFFFBE002C0205 /* HTTPSession.framework */; };
 /* End PBXBuildFile section */
@@ -44,17 +47,26 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3579C99C3EC87AC45CCF4E0E /* Pods_HTTPSession_tvOS_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HTTPSession_tvOS_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		40C67987243B103D495A7917 /* Pods-HTTPSession-macOS Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-macOS Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-macOS Tests/Pods-HTTPSession-macOS Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		445E703123BC5142EFC81D93 /* Pods_HTTPSession_macOS_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HTTPSession_macOS_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		481245B06F42E50100B835BF /* Pods-HTTPSession-macOS Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-macOS Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-macOS Tests/Pods-HTTPSession-macOS Tests.release.xcconfig"; sourceTree = "<group>"; };
 		52D6D97C1BEFF229002C0205 /* HTTPSession.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HTTPSession.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9861BEFF229002C0205 /* HTTPSession-iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HTTPSession-iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9E21BEFFF6E002C0205 /* HTTPSession.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HTTPSession.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9F01BEFFFBE002C0205 /* HTTPSession.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HTTPSession.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6DA0F1BF000BD002C0205 /* HTTPSession.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HTTPSession.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		775A3D262213F78FA8E95F70 /* Pods-HTTPSession-tvOS Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-tvOS Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-tvOS Tests/Pods-HTTPSession-tvOS Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		8E0C36D51E6C387800CC21C6 /* HTTPSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPSession.swift; sourceTree = "<group>"; };
 		8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPSessionTests.swift; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* HTTPSession.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HTTPSession.plist; sourceTree = "<group>"; };
 		AD2FAA281CD0B6E100659CF4 /* HTTPSessionTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HTTPSessionTests.plist; sourceTree = "<group>"; };
 		DD75027A1C68FCFC006590AF /* HTTPSession-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HTTPSession-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD75028D1C690C7A006590AF /* HTTPSession-tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HTTPSession-tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD9A95BC46460F789CD005BB /* Pods-HTTPSession-tvOS Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-tvOS Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-tvOS Tests/Pods-HTTPSession-tvOS Tests.release.xcconfig"; sourceTree = "<group>"; };
+		E361500AC6251B34AC85CE88 /* Pods-HTTPSession-iOS Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-iOS Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-iOS Tests/Pods-HTTPSession-iOS Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		F6DD961F1554FD82F9E3905E /* Pods-HTTPSession-iOS Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-iOS Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-iOS Tests/Pods-HTTPSession-iOS Tests.release.xcconfig"; sourceTree = "<group>"; };
+		FCA78D650CA827E5174BF1A0 /* Pods_HTTPSession_iOS_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HTTPSession_iOS_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +82,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52D6D9871BEFF229002C0205 /* HTTPSession.framework in Frameworks */,
+				6F7D2E622BF48C5831136CA3 /* Pods_HTTPSession_iOS_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD7502881C68FEDE006590AF /* HTTPSession.framework in Frameworks */,
+				D7440F6325B2F7C58085929B /* Pods_HTTPSession_macOS_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,16 +121,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD7502921C690C7A006590AF /* HTTPSession.framework in Frameworks */,
+				8A122B0BD966959998B859FB /* Pods_HTTPSession_tvOS_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		484E0F643B2F401E09671715 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FCA78D650CA827E5174BF1A0 /* Pods_HTTPSession_iOS_Tests.framework */,
+				445E703123BC5142EFC81D93 /* Pods_HTTPSession_macOS_Tests.framework */,
+				3579C99C3EC87AC45CCF4E0E /* Pods_HTTPSession_tvOS_Tests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		52D6D9721BEFF229002C0205 = {
 			isa = PBXGroup;
 			children = (
 				52D6D99C1BEFF38C002C0205 /* Configs */,
+				484E0F643B2F401E09671715 /* Frameworks */,
+				91B1EBB26D3DE8B215D5D9DD /* Pods */,
 				52D6D97D1BEFF229002C0205 /* Products */,
 				8E0C36D41E6C387800CC21C6 /* Sources */,
 				8E0C36DA1E6C389300CC21C6 /* Tests */,
@@ -168,6 +195,19 @@
 				8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */,
 			);
 			path = HTTPSessionTests;
+			sourceTree = "<group>";
+		};
+		91B1EBB26D3DE8B215D5D9DD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E361500AC6251B34AC85CE88 /* Pods-HTTPSession-iOS Tests.debug.xcconfig */,
+				F6DD961F1554FD82F9E3905E /* Pods-HTTPSession-iOS Tests.release.xcconfig */,
+				40C67987243B103D495A7917 /* Pods-HTTPSession-macOS Tests.debug.xcconfig */,
+				481245B06F42E50100B835BF /* Pods-HTTPSession-macOS Tests.release.xcconfig */,
+				775A3D262213F78FA8E95F70 /* Pods-HTTPSession-tvOS Tests.debug.xcconfig */,
+				DD9A95BC46460F789CD005BB /* Pods-HTTPSession-tvOS Tests.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		DD7502721C68FC1B006590AF /* Frameworks */ = {
@@ -242,9 +282,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 52D6D9931BEFF229002C0205 /* Build configuration list for PBXNativeTarget "HTTPSession-iOS Tests" */;
 			buildPhases = (
+				18EB199FFF59E4379C7BAEF0 /* [CP] Check Pods Manifest.lock */,
 				52D6D9821BEFF229002C0205 /* Sources */,
 				52D6D9831BEFF229002C0205 /* Frameworks */,
 				52D6D9841BEFF229002C0205 /* Resources */,
+				CD3B1039CA48DD85833984BA /* [CP] Embed Pods Frameworks */,
+				B919ACB5CB830C6AC616B7DB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -314,9 +357,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DD7502821C68FCFC006590AF /* Build configuration list for PBXNativeTarget "HTTPSession-macOS Tests" */;
 			buildPhases = (
+				BDA39E123DE1CCD1140B8E42 /* [CP] Check Pods Manifest.lock */,
 				DD7502761C68FCFC006590AF /* Sources */,
 				DD7502771C68FCFC006590AF /* Frameworks */,
 				DD7502781C68FCFC006590AF /* Resources */,
+				1CEC2101BC4BCDF5FB4D58F7 /* [CP] Embed Pods Frameworks */,
+				432AB4D84BAA598D358B208F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -332,9 +378,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DD7502951C690C7A006590AF /* Build configuration list for PBXNativeTarget "HTTPSession-tvOS Tests" */;
 			buildPhases = (
+				2E16EEC32DA95AC3D091145C /* [CP] Check Pods Manifest.lock */,
 				DD7502891C690C7A006590AF /* Sources */,
 				DD75028A1C690C7A006590AF /* Frameworks */,
 				DD75028B1C690C7A006590AF /* Resources */,
+				14562BB9FD7E37EF77833CD3 /* [CP] Embed Pods Frameworks */,
+				C98D87C746DE1C199103780C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -460,6 +509,144 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		14562BB9FD7E37EF77833CD3 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HTTPSession-tvOS Tests/Pods-HTTPSession-tvOS Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		18EB199FFF59E4379C7BAEF0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		1CEC2101BC4BCDF5FB4D58F7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HTTPSession-macOS Tests/Pods-HTTPSession-macOS Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2E16EEC32DA95AC3D091145C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		432AB4D84BAA598D358B208F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HTTPSession-macOS Tests/Pods-HTTPSession-macOS Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B919ACB5CB830C6AC616B7DB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HTTPSession-iOS Tests/Pods-HTTPSession-iOS Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BDA39E123DE1CCD1140B8E42 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C98D87C746DE1C199103780C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HTTPSession-tvOS Tests/Pods-HTTPSession-tvOS Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CD3B1039CA48DD85833984BA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HTTPSession-iOS Tests/Pods-HTTPSession-iOS Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		52D6D9771BEFF229002C0205 /* Sources */ = {
@@ -681,8 +868,8 @@
 		};
 		52D6D9941BEFF229002C0205 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E361500AC6251B34AC85CE88 /* Pods-HTTPSession-iOS Tests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Configs/HTTPSessionTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -695,8 +882,8 @@
 		};
 		52D6D9951BEFF229002C0205 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F6DD961F1554FD82F9E3905E /* Pods-HTTPSession-iOS Tests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = Configs/HTTPSessionTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -846,8 +1033,8 @@
 		};
 		DD7502831C68FCFC006590AF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40C67987243B103D495A7917 /* Pods-HTTPSession-macOS Tests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Configs/HTTPSessionTests.plist;
@@ -862,8 +1049,8 @@
 		};
 		DD7502841C68FCFC006590AF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 481245B06F42E50100B835BF /* Pods-HTTPSession-macOS Tests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Configs/HTTPSessionTests.plist;
@@ -879,8 +1066,8 @@
 		};
 		DD7502961C690C7A006590AF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 775A3D262213F78FA8E95F70 /* Pods-HTTPSession-tvOS Tests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = Configs/HTTPSessionTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.HTTPSession.HTTPSession-tvOS-Tests";
@@ -893,8 +1080,8 @@
 		};
 		DD7502971C690C7A006590AF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD9A95BC46460F789CD005BB /* Pods-HTTPSession-tvOS Tests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				INFOPLIST_FILE = Configs/HTTPSessionTests.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.HTTPSession.HTTPSession-tvOS-Tests";

@@ -1,0 +1,6 @@
+framework module Pods_HTTPSession_iOS_Tests {
+  umbrella header "Pods-HTTPSession-iOS Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
