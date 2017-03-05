@@ -38,7 +38,7 @@ class HTTPSessionTests: XCTestCase {
         }
 
         try? http.start()
-        
+
         return http
     }()
 
@@ -66,13 +66,40 @@ class HTTPSessionTests: XCTestCase {
         }
         waitForExpectations(timeout: 4)
     }
+
+    func testDownloadProgress() {
+        let expect = expectation(description: "downloadProgress")
+        let url = urlFor(path: "/hello")
+        var byteCount: Int64 = 0
+        var totalBytes: Int64 = 0
+
+        session.get(url, downloadProgress: { (bytesDownloaded, totalBytesDownloaded, totalBytesToDownload) in
+            byteCount = totalBytesDownloaded
+            totalBytes = totalBytesToDownload
+        }, completion: { result in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let (data, _) = result.data(), data.count > 0 else {
+                XCTFail()
+                return
+            }
+            let sameProgress = (byteCount == totalBytes)
+            let sameSize = sameProgress && (totalBytes == Int64(data.count))
+            XCTAssertTrue(sameSize)
+            expect.fulfill()
+        })
+        waitForExpectations(timeout: 4)
+    }
 }
 
 #if os(Linux)
 extension HTTPSessionTests {
     static var allTests : [(String, (HTTPSessionTests) -> () throws -> Void)] {
         return [
-            ("testExample", testExample),
+            ("testHello", testHello),
+            ("testDownloadProgress", testDownloadProgress),
         ]
     }
 }
