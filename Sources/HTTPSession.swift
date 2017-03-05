@@ -24,14 +24,14 @@
 
 import Foundation
 
-enum HTTPError: Error {
+public enum HTTPError: Error {
     case invalidDownloadURL(URL)
     case invalidStatusCode(HTTPURLResponse)
     case noResponse
     case noTemporaryDownloadURL
 }
 
-enum HTTPMethod: String {
+public enum HTTPMethod: String {
     case GET
     case HEAD
     case POST
@@ -39,30 +39,30 @@ enum HTTPMethod: String {
     case DELETE
 }
 
-enum HTTPResultDataType {
+public enum HTTPResultDataType {
     case data(Data)
     case url(URL)
 }
 
-enum HTTPResult {
+public enum HTTPResult {
     case failure(Error)
     case success(HTTPResultDataType, HTTPURLResponse)
 }
 
-final class HTTPSession: NSObject {
-    typealias ResultCompletion = (HTTPResult) -> Void
+public final class HTTPSession: NSObject {
+    public typealias ResultCompletion = (HTTPResult) -> Void
 
-    typealias DownloadProgress = (_ bytesDownloaded: Int64, _ totalBytesDownloaded: Int64, _ totalBytesToDownload: Int64) -> Void
+    public typealias DownloadProgress = (_ bytesDownloaded: Int64, _ totalBytesDownloaded: Int64, _ totalBytesToDownload: Int64) -> Void
 
-    typealias UploadProgress = (_ bytesUploaded: Int64, _ totalBytesUploaded: Int64, _ totalBytesToUpload: Int64) -> Void
+    public typealias UploadProgress = (_ bytesUploaded: Int64, _ totalBytesUploaded: Int64, _ totalBytesToUpload: Int64) -> Void
 
-    static var shared = HTTPSession()
+    public static var shared = HTTPSession()
 
-    private(set) var session: URLSession! = nil
+    public private(set) var session: URLSession! = nil
 
     fileprivate var taskHandlers = [Int: TaskHandler]()
 
-    init(config: URLSessionConfiguration? = nil) {
+    public init(config: URLSessionConfiguration? = nil) {
         super.init()
 
         let config = config ?? URLSessionConfiguration.default
@@ -70,7 +70,13 @@ final class HTTPSession: NSObject {
     }
 
     @discardableResult
-    func get(_ request: URLRequest, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
+    public func get(_ url: URL, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
+        let request = URLRequest(url: url)
+        return get(request, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
+    }
+
+    @discardableResult
+    public func get(_ request: URLRequest, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
         var req = request
         req.httpMethod = HTTPMethod.GET.rawValue
 
@@ -116,14 +122,14 @@ final class HTTPSession: NSObject {
 }
 
 extension HTTPSession: URLSessionTaskDelegate {
-    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         guard let handler = taskHandlers[task.taskIdentifier], let progress = handler.uploadProgress else {
             return
         }
         progress(bytesSent, totalBytesSent, totalBytesExpectedToSend)
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let handler = taskHandlers.removeValue(forKey: task.taskIdentifier) else {
             return
         }
@@ -153,12 +159,12 @@ extension HTTPSession: URLSessionTaskDelegate {
 }
 
 extension HTTPSession: URLSessionDataDelegate {
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         // The only data tasks used are upload tasks, and they are converted to download tasks so that we can track progress
         completionHandler(.becomeDownload)
     }
 
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome downloadTask: URLSessionDownloadTask) {
+    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didBecome downloadTask: URLSessionDownloadTask) {
         guard let handler = taskHandlers.removeValue(forKey: dataTask.taskIdentifier) else {
             return
         }
@@ -167,7 +173,7 @@ extension HTTPSession: URLSessionDataDelegate {
 }
 
 extension HTTPSession: URLSessionDownloadDelegate {
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         guard let handler = taskHandlers[downloadTask.taskIdentifier] else {
             return
         }
@@ -192,7 +198,7 @@ extension HTTPSession: URLSessionDownloadDelegate {
         }
     }
 
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         guard let handler = taskHandlers[downloadTask.taskIdentifier], let progress = handler.downloadProgress else {
             return
         }

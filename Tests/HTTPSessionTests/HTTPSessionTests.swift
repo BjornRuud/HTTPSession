@@ -25,12 +25,48 @@
 import Foundation
 import XCTest
 import HTTPSession
+import Swifter
 
 class HTTPSessionTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        //// XCTAssertEqual(HTTPSession().text, "Hello, World!")
+    let session = HTTPSession()
+
+    let server: HttpServer = {
+        let http = HttpServer()
+
+        http["/hello"] = { request in
+            return .ok(.text("hello"))
+        }
+
+        try? http.start()
+        
+        return http
+    }()
+    
+    let basePath = "http://127.0.0.1:8080"
+
+    func urlFor(path: String) -> URL {
+        return URL(string: basePath + path)!
+    }
+
+    func testHello() {
+        let expect = expectation(description: "hello")
+        let url = urlFor(path: "/hello")
+        session.get(url) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
+            case .success(let type, _):
+                switch type {
+                case .data(let data):
+                    let text = String(data: data, encoding: .utf8)!
+                    XCTAssertEqual(text, "hello")
+                    expect.fulfill()
+                default:
+                    XCTFail()
+                }
+            }
+        }
+        waitForExpectations(timeout: 4)
     }
 }
 
