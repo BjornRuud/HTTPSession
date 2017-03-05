@@ -57,31 +57,40 @@ public enum HTTPResult {
         }
     }
 
-    public func data() -> (Data, HTTPURLResponse)? {
+    public func response() -> HTTPURLResponse? {
         switch self {
-        case .success(let type, let response):
+        case .success(_, let response):
+            return response
+        default:
+            return nil
+        }
+    }
+
+    public func data() -> Data? {
+        switch self {
+        case .success(let type, _):
             switch type {
             case .data(let data):
-                return (data, response)
+                return data
             case .url(let url):
                 guard let data = try? Data(contentsOf: url, options: .alwaysMapped) else {
                     return nil
                 }
-                return (data, response)
+                return data
             }
         default:
             return nil
         }
     }
 
-    public func url() -> (URL, HTTPURLResponse)? {
+    public func url() -> URL? {
         switch self {
-        case .success(let type, let response):
+        case .success(let type, _):
             switch type {
             case .data(_):
                 return nil
             case .url(let url):
-                return (url, response)
+                return url
             }
         default:
             return nil
@@ -123,6 +132,20 @@ public final class HTTPSession: NSObject {
         return sendDownloadTask(request: req, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
     }
 
+    @discardableResult
+    public func head(_ url: URL, completion: @escaping ResultCompletion) -> URLSessionTask {
+        let request = URLRequest(url: url)
+        return head(request, completion: completion)
+    }
+
+    @discardableResult
+    public func head(_ request: URLRequest, completion: @escaping ResultCompletion) -> URLSessionTask {
+        var req = request
+        req.httpMethod = HTTPMethod.HEAD.rawValue
+
+        return sendDownloadTask(request: req, downloadTo: nil, downloadProgress: nil, completion: completion)
+    }
+    
     @discardableResult
     private func sendDownloadTask(
         request: URLRequest,

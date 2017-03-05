@@ -56,7 +56,7 @@ class HTTPSessionTests: XCTestCase {
                 XCTFail("\(error)")
                 return
             }
-            guard let (data, _) = result.data() else {
+            guard let data = result.data() else {
                 XCTFail()
                 return
             }
@@ -81,7 +81,7 @@ class HTTPSessionTests: XCTestCase {
                 XCTFail("\(error)")
                 return
             }
-            guard let (data, _) = result.data(), data.count > 0 else {
+            guard let data = result.data(), data.count > 0 else {
                 XCTFail()
                 return
             }
