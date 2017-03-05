@@ -52,22 +52,24 @@ public enum HTTPResult {
         switch self {
         case .failure(let error):
             return error
-        default:
+        case .success(_, _):
             return nil
         }
     }
 
     public func response() -> HTTPURLResponse? {
         switch self {
+        case .failure(_):
+            return nil
         case .success(_, let response):
             return response
-        default:
-            return nil
         }
     }
 
     public func data() -> Data? {
         switch self {
+        case .failure(_):
+            return nil
         case .success(let type, _):
             switch type {
             case .data(let data):
@@ -78,13 +80,13 @@ public enum HTTPResult {
                 }
                 return data
             }
-        default:
-            return nil
         }
     }
 
     public func url() -> URL? {
         switch self {
+        case .failure(_):
+            return nil
         case .success(let type, _):
             switch type {
             case .data(_):
@@ -92,8 +94,6 @@ public enum HTTPResult {
             case .url(let url):
                 return url
             }
-        default:
-            return nil
         }
     }
 }
