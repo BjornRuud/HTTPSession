@@ -32,11 +32,11 @@ public enum HTTPError: Error {
 }
 
 public enum HTTPMethod: String {
-    case GET
-    case HEAD
-    case POST
-    case PUT
-    case DELETE
+    case get = "GET"
+    case head = "HEAD"
+    case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
 }
 
 public enum HTTPResultDataType {
@@ -127,7 +127,7 @@ public final class HTTPSession: NSObject {
     @discardableResult
     public func get(_ request: URLRequest, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
         var getRequest = request
-        getRequest.httpMethod = HTTPMethod.GET.rawValue
+        getRequest.httpMethod = HTTPMethod.get.rawValue
 
         return sendDownloadTask(request: getRequest, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
     }
@@ -141,7 +141,7 @@ public final class HTTPSession: NSObject {
     @discardableResult
     public func head(_ request: URLRequest, completion: @escaping ResultCompletion) -> URLSessionTask {
         var headRequest = request
-        headRequest.httpMethod = HTTPMethod.HEAD.rawValue
+        headRequest.httpMethod = HTTPMethod.head.rawValue
 
         return sendDownloadTask(request: headRequest, downloadTo: nil, downloadProgress: nil, completion: completion)
     }
@@ -149,7 +149,7 @@ public final class HTTPSession: NSObject {
     @discardableResult
     public func post(_ request: URLRequest, from data: Data, downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
         var postRequest = request
-        postRequest.httpMethod = HTTPMethod.POST.rawValue
+        postRequest.httpMethod = HTTPMethod.post.rawValue
 
         return sendUploadTask(request: postRequest, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
     }
