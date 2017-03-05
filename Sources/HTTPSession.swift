@@ -229,9 +229,8 @@ extension HTTPSession: URLSessionDownloadDelegate {
 
         if let fileUrl = handler.url {
             // If download URL is provided, move temp file to requested location
-            let fm = FileManager.default
             do {
-                try fm.moveItem(at: location, to: fileUrl)
+                try FileManager.default.moveItem(at: location, to: fileUrl)
             } catch let fileError {
                 handler.error = fileError
                 return
