@@ -92,6 +92,24 @@ class HTTPSessionTests: XCTestCase {
         })
         waitForExpectations(timeout: 4)
     }
+
+    func testHead() {
+        let expect = expectation(description: "hello")
+        let url = urlFor(path: "/hello")
+        session.head(url) { result in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data() else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(data.count, 0)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
 }
 
 #if os(Linux)

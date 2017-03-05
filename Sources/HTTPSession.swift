@@ -145,7 +145,7 @@ public final class HTTPSession: NSObject {
 
         return sendDownloadTask(request: req, downloadTo: nil, downloadProgress: nil, completion: completion)
     }
-    
+
     @discardableResult
     private func sendDownloadTask(
         request: URLRequest,
