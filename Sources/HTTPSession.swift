@@ -107,14 +107,14 @@ public final class HTTPSession: NSObject {
 
     public static var shared = HTTPSession()
 
-    public private(set) var session: URLSession! = nil
+    public private(set) var session: URLSession!
 
     fileprivate var taskHandlers = [Int: TaskHandler]()
 
-    public init(config: URLSessionConfiguration? = nil) {
+    public init(configuration: URLSessionConfiguration? = nil) {
         super.init()
 
-        let config = config ?? URLSessionConfiguration.default
+        let config = configuration ?? URLSessionConfiguration.default
         self.session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }
 
@@ -126,10 +126,10 @@ public final class HTTPSession: NSObject {
 
     @discardableResult
     public func get(_ request: URLRequest, downloadTo fileUrl: URL? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
-        var req = request
-        req.httpMethod = HTTPMethod.GET.rawValue
+        var getRequest = request
+        getRequest.httpMethod = HTTPMethod.GET.rawValue
 
-        return sendDownloadTask(request: req, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
+        return sendDownloadTask(request: getRequest, downloadTo: fileUrl, downloadProgress: downloadProgress, completion: completion)
     }
 
     @discardableResult
@@ -140,20 +140,20 @@ public final class HTTPSession: NSObject {
 
     @discardableResult
     public func head(_ request: URLRequest, completion: @escaping ResultCompletion) -> URLSessionTask {
-        var req = request
-        req.httpMethod = HTTPMethod.HEAD.rawValue
+        var headRequest = request
+        headRequest.httpMethod = HTTPMethod.HEAD.rawValue
 
-        return sendDownloadTask(request: req, downloadTo: nil, downloadProgress: nil, completion: completion)
+        return sendDownloadTask(request: headRequest, downloadTo: nil, downloadProgress: nil, completion: completion)
     }
 
     @discardableResult
     public func post(_ request: URLRequest, from data: Data, downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> URLSessionTask {
-        var req = request
-        req.httpMethod = HTTPMethod.POST.rawValue
+        var postRequest = request
+        postRequest.httpMethod = HTTPMethod.POST.rawValue
 
-        return sendUploadTask(request: req, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
+        return sendUploadTask(request: postRequest, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
     }
-    
+
     @discardableResult
     private func sendDownloadTask(
         request: URLRequest,
