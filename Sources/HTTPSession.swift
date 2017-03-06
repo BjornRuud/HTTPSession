@@ -106,11 +106,15 @@ public final class HTTPSession: NSObject {
     /// Upload progress closure called periodically by requests with body data.
     public typealias UploadProgress = (_ bytesUploaded: Int64, _ totalBytesUploaded: Int64, _ totalBytesToUpload: Int64) -> Void
 
+    public typealias AuthenticationChallengeResponse = (URLSession.AuthChallengeDisposition, URLCredential?)
+
     /// Shared `HTTPSession` for easy access. The default is configured with `URLSessionConfiguration.default`.
     public static var shared = HTTPSession()
 
     /// The underlying `URLSession` used for tasks.
     public private(set) var session: URLSession!
+
+    public var authenticationChallengeHandler: ((URLSession, URLSessionTask?, URLAuthenticationChallenge) -> AuthenticationChallengeResponse)?
 
     /**
      Since `HTTPSession` uses the delegate methods on `URLSession`, completion and progress closures (as well as
@@ -181,7 +185,27 @@ public final class HTTPSession: NSObject {
 
 }
 
+extension HTTPSession: URLSessionDelegate {
+    public func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        urlSessionOrTask(session, task: nil, didReceive: challenge, completionHandler: completionHandler)
+    }
+}
+
 extension HTTPSession: URLSessionTaskDelegate {
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        urlSessionOrTask(session, task: task, didReceive: challenge, completionHandler: completionHandler)
+    }
+
+    fileprivate func urlSessionOrTask(_ session: URLSession, task: URLSessionTask?, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        guard let authHandler = authenticationChallengeHandler else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        let (disposition, credential) = authHandler(session, task, challenge)
+        completionHandler(disposition, credential)
+    }
+
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         guard let handler = taskHandlers[task.taskIdentifier], let progress = handler.uploadProgress else {
             return
