@@ -25,10 +25,7 @@
 import Foundation
 
 public enum HTTPError: Error {
-    case invalidDownloadURL(URL)
-    case invalidStatusCode(HTTPURLResponse)
     case noResponse
-    case noTemporaryDownloadURL
 }
 
 public enum HTTPMethod: String {
@@ -99,16 +96,27 @@ public enum HTTPResult {
 }
 
 public final class HTTPSession: NSObject {
+
+    /// Completion closure for request methods.
     public typealias ResultCompletion = (HTTPResult) -> Void
 
+    /// Download progress closure called periodically by responses with body data.
     public typealias DownloadProgress = (_ bytesDownloaded: Int64, _ totalBytesDownloaded: Int64, _ totalBytesToDownload: Int64) -> Void
 
+    /// Upload progress closure called periodically by requests with body data.
     public typealias UploadProgress = (_ bytesUploaded: Int64, _ totalBytesUploaded: Int64, _ totalBytesToUpload: Int64) -> Void
 
+    /// Shared `HTTPSession` for easy access. The default is configured with `URLSessionConfiguration.default`.
     public static var shared = HTTPSession()
 
+    /// The underlying `URLSession` used for tasks.
     public private(set) var session: URLSession!
 
+    /**
+     Since `HTTPSession` uses the delegate methods on `URLSession`, completion and progress closures (as well as
+     as other task related data) are stored in a `TaskHandler` object. This dictionary keeps track of the handlers
+     using the task identifier as key.
+     */
     fileprivate var taskHandlers = [Int: TaskHandler]()
 
     public init(configuration: URLSessionConfiguration? = nil) {
@@ -118,45 +126,47 @@ public final class HTTPSession: NSObject {
         self.session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }
 
-    @discardableResult
-    public func get(_ url: URL, from data: Data = Data(), downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
-        let request = URLRequest(url: url)
-        return get(request, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
+    deinit {
+        session.invalidateAndCancel()
     }
 
     @discardableResult
-    public func get(_ request: URLRequest, from data: Data = Data(), downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
-        return sendRequest(request, method: HTTPMethod.get, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
+    public func get(_ request: URLRequest, body data: Data = Data(), downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
+        return send(request: request, method: HTTPMethod.get.rawValue, body: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
     }
 
     @discardableResult
-    public func head(_ url: URL, completion: @escaping ResultCompletion) -> Int {
-        let request = URLRequest(url: url)
-        return head(request, completion: completion)
+    public func head(_ request: URLRequest, body data: Data = Data(), uploadProgress: UploadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
+        return send(request: request, method: HTTPMethod.head.rawValue, body: data, uploadProgress: uploadProgress, completion: completion)
     }
 
     @discardableResult
-    public func head(_ request: URLRequest, completion: @escaping ResultCompletion) -> Int {
-        return sendRequest(request, method: HTTPMethod.head, completion: completion)
+    public func post(_ request: URLRequest, body data: Data, downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
+        return send(request: request, method: HTTPMethod.post.rawValue, body: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
     }
 
     @discardableResult
-    public func post(_ request: URLRequest, from data: Data, downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
-        return sendRequest(request, method: HTTPMethod.post, from: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
+    public func put(_ request: URLRequest, body data: Data, downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
+        return send(request: request, method: HTTPMethod.put.rawValue, body: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
     }
 
     @discardableResult
-    private func sendRequest(
-        _ request: URLRequest,
-        method: HTTPMethod = HTTPMethod.get,
-        from data: Data = Data(),
+    public func delete(_ request: URLRequest, body data: Data = Data(), downloadTo fileUrl: URL? = nil, uploadProgress: UploadProgress? = nil, downloadProgress: DownloadProgress? = nil, completion: @escaping ResultCompletion) -> Int {
+        return send(request: request, method: HTTPMethod.delete.rawValue, body: data, downloadTo: fileUrl, uploadProgress: uploadProgress, downloadProgress: downloadProgress, completion: completion)
+    }
+
+    @discardableResult
+    public func send(
+        request: URLRequest,
+        method: String = HTTPMethod.get.rawValue,
+        body data: Data = Data(),
         downloadTo fileUrl: URL? = nil,
         uploadProgress: UploadProgress? = nil,
         downloadProgress: DownloadProgress? = nil,
         completion: @escaping ResultCompletion) -> Int
     {
         var methodRequest = request
-        methodRequest.httpMethod = method.rawValue
+        methodRequest.httpMethod = method
         let task = session.uploadTask(with: methodRequest, from: data)
 
         let handler = TaskHandler(completion: completion)
@@ -168,6 +178,7 @@ public final class HTTPSession: NSObject {
 
         return task.taskIdentifier
     }
+
 }
 
 extension HTTPSession: URLSessionTaskDelegate {

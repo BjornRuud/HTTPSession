@@ -43,6 +43,16 @@ class HTTPSessionTests: XCTestCase {
             return HttpResponse.ok(.text(response))
         }
 
+        http.PUT["/put"] = { r in
+            let data = Data(bytes: r.body)
+            var response = String(data: data, encoding: .utf8) ?? ""
+            return HttpResponse.ok(.text(response))
+        }
+
+        http.DELETE["/delete"] = { r in
+            return HttpResponse.ok(.text("deleted"))
+        }
+
         try? http.start()
 
         return http
@@ -54,10 +64,43 @@ class HTTPSessionTests: XCTestCase {
         return URL(string: basePath + path)!
     }
 
-    func testHello() {
+    func testServerTimeout() {
+        let expect = expectation(description: "timeout")
+        let url = URL(string: "http://1.2.3.4:8080")!
+        let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 1)
+
+        session.get(request) { result in
+            guard let _ = result.error() else {
+                XCTFail()
+                return
+            }
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testServerFail() {
+        let expect = expectation(description: "fail")
+        let url = urlFor(path: "/fail")
+        let request = URLRequest(url: url)
+
+        session.get(request) { result in
+            guard let response = result.response() else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(response.statusCode, 404)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testGet() {
         let expect = expectation(description: "hello")
         let url = urlFor(path: "/hello")
-        session.get(url) { result in
+        let request = URLRequest(url: url)
+
+        session.get(request) { result in
             if let error = result.error() {
                 XCTFail("\(error)")
                 return
@@ -73,36 +116,12 @@ class HTTPSessionTests: XCTestCase {
         waitForExpectations(timeout: 4)
     }
 
-    func testDownloadProgress() {
-        let expect = expectation(description: "downloadProgress")
-        let url = urlFor(path: "/hello")
-        var byteCount: Int64 = 0
-        var totalBytes: Int64 = 0
-
-        session.get(url, downloadProgress: { (bytesDownloaded, totalBytesDownloaded, totalBytesToDownload) in
-            byteCount = totalBytesDownloaded
-            totalBytes = totalBytesToDownload
-        }, completion: { result in
-            if let error = result.error() {
-                XCTFail("\(error)")
-                return
-            }
-            guard let data = result.data(), data.count > 0 else {
-                XCTFail()
-                return
-            }
-            let sameProgress = (byteCount == totalBytes)
-            let sameSize = sameProgress && (totalBytes == Int64(data.count))
-            XCTAssertTrue(sameSize)
-            expect.fulfill()
-        })
-        waitForExpectations(timeout: 4)
-    }
-
     func testHead() {
         let expect = expectation(description: "hello")
         let url = urlFor(path: "/hello")
-        session.head(url) { result in
+        let request = URLRequest(url: url)
+
+        session.head(request) { result in
             if let error = result.error() {
                 XCTFail("\(error)")
                 return
@@ -121,7 +140,9 @@ class HTTPSessionTests: XCTestCase {
         let expect = expectation(description: "post")
         let url = urlFor(path: "/post")
         let request = URLRequest(url: url)
-        session.post(request, from: "fooBar".data(using: .utf8)!) { (result) in
+        let body = "fooBar".data(using: .utf8)!
+
+        session.post(request, body: body) { (result) in
             if let error = result.error() {
                 XCTFail("\(error)")
                 return
@@ -132,6 +153,49 @@ class HTTPSessionTests: XCTestCase {
             }
             let text = String(data: data, encoding: .utf8)!
             XCTAssertEqual(text, "fooBar")
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testPut() {
+        let expect = expectation(description: "put")
+        let url = urlFor(path: "/put")
+        let request = URLRequest(url: url)
+        let body = "fooBar".data(using: .utf8)!
+
+        session.put(request, body: body) { (result) in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data() else {
+                XCTFail()
+                return
+            }
+            let text = String(data: data, encoding: .utf8)!
+            XCTAssertEqual(text, "fooBar")
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testDelete() {
+        let expect = expectation(description: "delete")
+        let url = urlFor(path: "/delete")
+        let request = URLRequest(url: url)
+
+        session.delete(request) { (result) in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data() else {
+                XCTFail()
+                return
+            }
+            let text = String(data: data, encoding: .utf8)!
+            XCTAssertEqual(text, "deleted")
             expect.fulfill()
         }
         waitForExpectations(timeout: 4)
@@ -149,7 +213,7 @@ class HTTPSessionTests: XCTestCase {
 
         let upData = "fooBar".data(using: .utf8)!
 
-        session.post(request, from: upData, uploadProgress: {
+        session.post(request, body: upData, uploadProgress: {
             (bytesUploaded, totalBytesUploaded, totalBytesToUpload) in
             upCount = totalBytesUploaded
             upTotal = totalBytesToUpload
@@ -172,6 +236,33 @@ class HTTPSessionTests: XCTestCase {
             XCTAssertEqual(downCount, Int64(data.count))
             expect.fulfill()
         }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testDownloadProgress() {
+        let expect = expectation(description: "downloadProgress")
+        var downCount: Int64 = 0
+        var downTotal: Int64 = 0
+
+        let url = urlFor(path: "/hello")
+        let request = URLRequest(url: url)
+
+        session.get(request, downloadProgress: { (bytesDownloaded, totalBytesDownloaded, totalBytesToDownload) in
+            downCount = totalBytesDownloaded
+            downTotal = totalBytesToDownload
+        }, completion: { result in
+            if let error = result.error() {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data(), data.count > 0 else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(downCount, downTotal)
+            XCTAssertEqual(downCount, Int64(data.count))
+            expect.fulfill()
+        })
         waitForExpectations(timeout: 4)
     }
 }
