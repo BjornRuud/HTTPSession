@@ -17,6 +17,9 @@
 		8E0C36DE1E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */; };
 		8E0C36DF1E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */; };
 		8E0C36E01E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */; };
+		8EFCCB781E70947C00B872C6 /* HTTPResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFCCB771E70947C00B872C6 /* HTTPResponseTests.swift */; };
+		8EFCCB791E70947C00B872C6 /* HTTPResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFCCB771E70947C00B872C6 /* HTTPResponseTests.swift */; };
+		8EFCCB7A1E70947C00B872C6 /* HTTPResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EFCCB771E70947C00B872C6 /* HTTPResponseTests.swift */; };
 		D7440F6325B2F7C58085929B /* Pods_HTTPSession_macOS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 445E703123BC5142EFC81D93 /* Pods_HTTPSession_macOS_Tests.framework */; };
 		DD7502881C68FEDE006590AF /* HTTPSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* HTTPSession.framework */; };
 		DD7502921C690C7A006590AF /* HTTPSession.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D9F01BEFFFBE002C0205 /* HTTPSession.framework */; };
@@ -59,6 +62,7 @@
 		775A3D262213F78FA8E95F70 /* Pods-HTTPSession-tvOS Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HTTPSession-tvOS Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HTTPSession-tvOS Tests/Pods-HTTPSession-tvOS Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		8E0C36D51E6C387800CC21C6 /* HTTPSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPSession.swift; sourceTree = "<group>"; };
 		8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPSessionTests.swift; sourceTree = "<group>"; };
+		8EFCCB771E70947C00B872C6 /* HTTPResponseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPResponseTests.swift; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* HTTPSession.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HTTPSession.plist; sourceTree = "<group>"; };
 		AD2FAA281CD0B6E100659CF4 /* HTTPSessionTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = HTTPSessionTests.plist; sourceTree = "<group>"; };
 		DD75027A1C68FCFC006590AF /* HTTPSession-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "HTTPSession-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				8E0C36DC1E6C389300CC21C6 /* HTTPSessionTests.swift */,
+				8EFCCB771E70947C00B872C6 /* HTTPResponseTests.swift */,
 			);
 			path = HTTPSessionTests;
 			sourceTree = "<group>";
@@ -661,6 +666,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EFCCB781E70947C00B872C6 /* HTTPResponseTests.swift in Sources */,
 				8E0C36DE1E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -693,6 +699,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EFCCB791E70947C00B872C6 /* HTTPResponseTests.swift in Sources */,
 				8E0C36DF1E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -701,6 +708,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8EFCCB7A1E70947C00B872C6 /* HTTPResponseTests.swift in Sources */,
 				8E0C36E01E6C389300CC21C6 /* HTTPSessionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

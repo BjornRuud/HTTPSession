@@ -26,6 +26,8 @@ import Foundation
 
 public enum HTTPError: Error {
     case noResponse
+    case clientError
+    case serverError
 }
 
 public enum HTTPMethod: String {
@@ -36,18 +38,13 @@ public enum HTTPMethod: String {
     case delete = "DELETE"
 }
 
-public enum HTTPResultDataType {
-    case data(Data)
-    case url(URL)
-}
-
 public enum HTTPResult {
-    case failure(Error)
-    case success(HTTPResultDataType, HTTPURLResponse)
+    case failure(Error, HTTPURLResponse?, Data?)
+    case success(HTTPURLResponse, Data)
 
     public func error() -> Error? {
         switch self {
-        case .failure(let error):
+        case .failure(let error, _, _):
             return error
         case .success(_, _):
             return nil
@@ -56,41 +53,122 @@ public enum HTTPResult {
 
     public func response() -> HTTPURLResponse? {
         switch self {
-        case .failure(_):
-            return nil
-        case .success(_, let response):
+        case .failure(_, let response, _):
+            return response
+        case .success(let response, _):
             return response
         }
     }
 
     public func data() -> Data? {
         switch self {
-        case .failure(_):
-            return nil
-        case .success(let type, _):
-            switch type {
-            case .data(let data):
-                return data
-            case .url(let url):
-                guard let data = try? Data(contentsOf: url, options: .alwaysMapped) else {
-                    return nil
-                }
-                return data
-            }
+        case .failure(_, _, let data):
+            return data
+        case .success(_, let data):
+            return data
         }
     }
+}
 
-    public func url() -> URL? {
+public enum HTTPStatusCode: Int {
+    case `continue`                  = 100
+    case switchingProtocols          = 101
+
+    case ok                          = 200
+    case created                     = 201
+    case accepted                    = 202
+    case nonAuthoritativeInformation = 203
+    case noContent                   = 204
+    case resetContent                = 205
+    case partialContent              = 206
+
+    case multipleChoices             = 300
+    case movedPermanently            = 301
+    case found                       = 302
+    case seeOther                    = 303
+    case notModified                 = 304
+    case useProxy                    = 305
+    case temporaryRedirect           = 307
+
+    case badRequest                  = 400
+    case unauthorized                = 401
+    case paymentRequired             = 402
+    case forbidden                   = 403
+    case notFound                    = 404
+    case methodNotAllowed            = 405
+    case notAcceptable               = 406
+    case proxyAuthenticationRequired = 407
+    case requestTimeout              = 408
+    case conflict                    = 409
+    case gone                        = 410
+    case lengthRequired              = 411
+    case preconditionFailed          = 412
+    case payloadTooLarge             = 413
+    case uriTooLong                  = 414
+    case unsupportedMediaType        = 415
+    case rangeNotSatisfiable         = 416
+    case expectationFailed           = 417
+    case upgradeRequired             = 426
+
+    case internalServerError         = 500
+    case notImplemented              = 501
+    case badGateway                  = 502
+    case serviceUnavailable          = 503
+    case gatewayTimeout              = 504
+    case httpVersionNotSupported     = 505
+
+    public func text() -> String {
         switch self {
-        case .failure(_):
-            return nil
-        case .success(let type, _):
-            switch type {
-            case .data(_):
-                return nil
-            case .url(let url):
-                return url
-            }
+        // 1xx
+        case .continue:                    return "Continue"
+        case .switchingProtocols:          return "Switching Protocols"
+
+        // 2xx
+        case .ok:                          return "OK"
+        case .created:                     return "Created"
+        case .accepted:                    return "Accepted"
+        case .nonAuthoritativeInformation: return "Non-Authoritative Information"
+        case .noContent:                   return "No Content"
+        case .resetContent:                return "Reset Content"
+        case .partialContent:              return "Partial Content"
+
+        // 3xx
+        case .multipleChoices:             return "Multiple Choices"
+        case .movedPermanently:            return "Moved Permanently"
+        case .found:                       return "Found"
+        case .seeOther:                    return "See Other"
+        case .notModified:                 return "Not Modified"
+        case .useProxy:                    return "Use Proxy"
+        case .temporaryRedirect:           return "Temporary Redirect"
+
+        // 4xx
+        case .badRequest:                  return "Bad Request"
+        case .unauthorized:                return "Unauthorized"
+        case .paymentRequired:             return "Payment Required"
+        case .forbidden:                   return "Forbidden"
+        case .notFound:                    return "Not Found"
+        case .methodNotAllowed:            return "Method Not Allowed"
+        case .notAcceptable:               return "Not Acceptable"
+        case .proxyAuthenticationRequired: return "Proxy Authentication Required"
+        case .requestTimeout:              return "Request Timeout"
+        case .conflict:                    return "Conflict"
+        case .gone:                        return "Gone"
+        case .lengthRequired:              return "Length Required"
+        case .preconditionFailed:          return "Precondition Failed"
+        case .payloadTooLarge:             return "Payload Too Large"
+        case .uriTooLong:                  return "URI Too Long"
+        case .unsupportedMediaType:        return "Unsupported Media Type"
+        case .rangeNotSatisfiable:         return "Range Not Satisfiable"
+        case .expectationFailed:           return "Expectation Failed"
+        case .upgradeRequired:             return "Upgrade Required"
+
+        // 5xx
+        case .internalServerError:         return "Internal Server Error"
+        case .notImplemented:              return "Not Implemented"
+        case .badGateway:                  return "Bad Gateway"
+        case .serviceUnavailable:          return "Service Unavailable"
+        case .gatewayTimeout:              return "Gateway Timeout"
+        case .httpVersionNotSupported:     return "HTTP Version Not Supported"
         }
     }
 }
@@ -115,6 +193,10 @@ public final class HTTPSession: NSObject {
     public private(set) var session: URLSession!
 
     public var authenticationChallengeHandler: ((URLSession, URLSessionTask?, URLAuthenticationChallenge) -> AuthenticationChallengeResponse)?
+
+    /// Enable to pass responses directly to the completion handler without parsing the status code.
+    /// Use this to implement custom response handling.
+    public var enableResponsePassthrough: Bool = false
 
     /**
      Since `HTTPSession` uses the delegate methods on `URLSession`, completion and progress closures (as well as
@@ -219,25 +301,32 @@ extension HTTPSession: URLSessionTaskDelegate {
         }
 
         if let error = error {
-            handler.completion(.failure(error))
+            handler.completion(.failure(error, nil, nil))
             return
         }
 
         if let error = handler.error {
-            handler.completion(.failure(error))
+            handler.completion(.failure(error, nil, nil))
             return
         }
 
         guard let response = task.response as? HTTPURLResponse else {
-            handler.completion(.failure(HTTPError.noResponse))
+            handler.completion(.failure(HTTPError.noResponse, nil, nil))
             return
         }
 
-        if let url = handler.url {
-            handler.completion(.success(.url(url), response))
+        let data = handler.data ?? Data()
+
+        if enableResponsePassthrough {
+            handler.completion(.success(response, data))
         } else {
-            let data = handler.data ?? Data()
-            handler.completion(.success(.data(data), response))
+            if 400 ..< 500 ~= response.statusCode {
+                handler.completion(.failure(HTTPError.clientError, response, data))
+            } else if 500 ..< 600 ~= response.statusCode {
+                handler.completion(.failure(HTTPError.serverError, response, data))
+            } else {
+                handler.completion(.success(response, data))
+            }
         }
     }
 }
@@ -262,22 +351,25 @@ extension HTTPSession: URLSessionDownloadDelegate {
             return
         }
 
+        var newLocation = location
+
         if let fileUrl = handler.url {
             // If download URL is provided, move temp file to requested location
             do {
                 try FileManager.default.moveItem(at: location, to: fileUrl)
+                newLocation = fileUrl
             } catch let fileError {
                 handler.error = fileError
                 return
             }
-        } else {
-            // Memory map temp file to Data so that the file reference stays valid after the temp file is removed
-            do {
-                handler.data = try Data(contentsOf: location, options: .alwaysMapped)
-            } catch let dataError {
-                handler.error = dataError
-                return
-            }
+        }
+
+        // Memory map downloaded file to virtual memory so size won't be an issue for returned data.
+        // If this was a temp file the mapping keeps the file reference alive.
+        do {
+            handler.data = try Data(contentsOf: newLocation, options: .alwaysMapped)
+        } catch let dataError {
+            handler.error = dataError
         }
     }
 

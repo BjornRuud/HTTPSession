@@ -37,6 +37,10 @@ class HTTPSessionTests: XCTestCase {
             return .ok(.text("hello"))
         }
 
+        http.HEAD["/hello"] = { request in
+            return .ok(.text("hello"))
+        }
+
         http.POST["/post"] = { r in
             let data = Data(bytes: r.body)
             var response = String(data: data, encoding: .utf8) ?? ""
@@ -53,12 +57,18 @@ class HTTPSessionTests: XCTestCase {
             return HttpResponse.ok(.text("deleted"))
         }
 
-        try? http.start()
-
         return http
     }()
 
     let basePath = "http://127.0.0.1:8080"
+
+    override func setUp() {
+        try? server.start()
+    }
+
+    override func tearDown() {
+        server.stop()
+    }
 
     func urlFor(path: String) -> URL {
         return URL(string: basePath + path)!
