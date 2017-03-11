@@ -105,6 +105,7 @@ class HTTPResponseTests: XCTestCase {
     extension HTTPResponseTests {
         static var allTests : [(String, (HTTPSessionTests) -> () throws -> Void)] {
             return [
+                ("testBasicAuth", testBasicAuth),
                 ("testInternalServerError", testInternalServerError),
             ]
         }

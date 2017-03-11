@@ -184,15 +184,14 @@ public final class HTTPSession: NSObject {
     /// Upload progress closure called periodically by requests with body data.
     public typealias UploadProgress = (_ bytesUploaded: Int64, _ totalBytesUploaded: Int64, _ totalBytesToUpload: Int64) -> Void
 
-    public typealias AuthenticationChallengeResponse = (URLSession.AuthChallengeDisposition, URLCredential?)
-
     /// Shared `HTTPSession` for easy access. The default is configured with `URLSessionConfiguration.default`.
     public static var shared = HTTPSession()
 
     /// The underlying `URLSession` used for tasks.
     public private(set) var session: URLSession!
 
-    public var authenticationChallengeHandler: ((URLSession, URLSessionTask?, URLAuthenticationChallenge) -> AuthenticationChallengeResponse)?
+    /// If set this handler will be used for both session and task authentication challenges.
+    public var authenticationChallengeHandler: ( (URLSession, URLSessionTask?, URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) )?
 
     /// Enable to pass responses directly to the completion handler without parsing the status code.
     /// Use this to implement custom response handling.
