@@ -69,7 +69,7 @@ public enum HTTPResult {
     case failure(HTTPSessionError)
     case success(HTTPURLResponse, Data)
 
-    public var error: Error? {
+    public var error: HTTPSessionError? {
         switch self {
         case .failure(let error):
             return error
