@@ -426,13 +426,7 @@ fileprivate final class TaskHandler {
 extension URLSession {
     public func task(withID taskID: Int, completion: @escaping (URLSessionTask?) -> Void) {
         getAllTasks() { (allTasks) in
-            var foundTask: URLSessionTask?
-            for task in allTasks {
-                if task.taskIdentifier == taskID {
-                    foundTask = task
-                    break
-                }
-            }
+            let foundTask = allTasks.first(where: { $0.taskIdentifier == taskID })
             completion(foundTask)
         }
     }
