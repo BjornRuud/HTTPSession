@@ -188,7 +188,7 @@ public final class HTTPSession: NSObject {
     public static var shared = HTTPSession()
 
     /// The underlying `URLSession` used for tasks.
-    public private(set) var session: URLSession!
+    public private(set) var urlSession: URLSession!
 
     /// If set this handler will be used for both session and task authentication challenges.
     public var authenticationChallengeHandler: ( (URLSession, URLSessionTask?, URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) )?
@@ -208,11 +208,11 @@ public final class HTTPSession: NSObject {
         super.init()
 
         let config = configuration ?? URLSessionConfiguration.default
-        self.session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        self.urlSession = URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }
 
     deinit {
-        session.invalidateAndCancel()
+        urlSession.invalidateAndCancel()
     }
 
     @discardableResult
@@ -252,7 +252,7 @@ public final class HTTPSession: NSObject {
     {
         var methodRequest = request
         methodRequest.httpMethod = method
-        let task = session.uploadTask(with: methodRequest, from: data)
+        let task = urlSession.uploadTask(with: methodRequest, from: data)
 
         let handler = TaskHandler(completion: completion)
         handler.uploadProgress = uploadProgress
@@ -263,7 +263,6 @@ public final class HTTPSession: NSObject {
 
         return task.taskIdentifier
     }
-
 }
 
 extension HTTPSession: URLSessionDelegate {
@@ -390,5 +389,20 @@ fileprivate final class TaskHandler {
 
     init(completion: @escaping HTTPSession.ResultCompletion) {
         self.completion = completion
+    }
+}
+
+extension URLSession {
+    public func task(withID taskID: Int, completion: @escaping (URLSessionTask?) -> Void) {
+        getAllTasks() { (allTasks) in
+            var foundTask: URLSessionTask?
+            for task in allTasks {
+                if task.taskIdentifier == taskID {
+                    foundTask = task
+                    break
+                }
+            }
+            completion(foundTask)
+        }
     }
 }
