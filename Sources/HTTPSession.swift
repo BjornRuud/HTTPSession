@@ -28,6 +28,7 @@ public enum HTTPSessionError: Error, CustomStringConvertible {
     case data(Error)
     case file(Error)
     case http(HTTPURLResponse, Data)
+    case invalidDownloadURL(URL)
     case noResponse
     case task(Error)
 
@@ -47,6 +48,9 @@ public enum HTTPSessionError: Error, CustomStringConvertible {
                 text = "Unknown"
             }
             return "\(response.statusCode) \(text) (\(data.count) bytes)"
+
+        case .invalidDownloadURL(let url):
+            return "Invalid download URL: \(url.absoluteString)"
 
         case .noResponse:
             return "No response"
@@ -287,6 +291,25 @@ public final class HTTPSession: NSObject {
         downloadProgress: DownloadProgress? = nil,
         completion: @escaping ResultCompletion) -> Int
     {
+        if let fileUrl = fileUrl {
+            var invalidFileUrl = false
+
+            if fileUrl.hasDirectoryPath {
+                invalidFileUrl = true
+            } else {
+                // Verify parent folder of file is writeable
+                let folderUrl = fileUrl.deletingLastPathComponent()
+                invalidFileUrl = !FileManager.default.isWritableFile(atPath: folderUrl.path)
+            }
+
+            if invalidFileUrl {
+                urlSession.delegateQueue.addOperation {
+                    completion(.failure(.invalidDownloadURL(fileUrl)))
+                }
+                return -1
+            }
+        }
+
         var methodRequest = request
         methodRequest.httpMethod = method
         let task = urlSession.uploadTask(with: methodRequest, from: data)
@@ -385,7 +408,9 @@ extension HTTPSession: URLSessionDownloadDelegate {
         if let fileUrl = handler.url {
             // If download URL is provided, move temp file to requested location
             do {
-                try FileManager.default.moveItem(at: location, to: fileUrl)
+                let fm = FileManager.default
+                try? fm.removeItem(at: fileUrl)
+                try fm.moveItem(at: location, to: fileUrl)
                 newLocation = fileUrl
             } catch let fileError {
                 handler.error = .file(fileError)

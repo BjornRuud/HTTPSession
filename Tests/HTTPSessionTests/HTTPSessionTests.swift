@@ -70,6 +70,11 @@ class HTTPSessionTests: XCTestCase {
         server.stop()
     }
 
+    func cacheURL(for path: String) -> URL {
+        let url = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        return url.appendingPathComponent(path)
+    }
+
     func urlFor(path: String) -> URL {
         return URL(string: basePath + path)!
     }
@@ -273,6 +278,53 @@ class HTTPSessionTests: XCTestCase {
             XCTAssertEqual(downCount, Int64(data.count))
             expect.fulfill()
         })
+        waitForExpectations(timeout: 4)
+    }
+
+    func testFileDownload() {
+        let expect = expectation(description: "fileDownload")
+
+        let url = urlFor(path: "/hello")
+        let request = URLRequest(url: url)
+
+        let fileUrl = cacheURL(for: "hello.txt")
+
+        session.get(request, downloadTo: fileUrl) { result in
+            if let error = result.error {
+                XCTFail("\(error)")
+                return
+            }
+            guard let data = result.data, data.count > 0 else {
+                XCTFail()
+                return
+            }
+            let fileData = try! Data(contentsOf: fileUrl)
+            XCTAssertEqual(data, fileData)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 4)
+    }
+
+    func testInvalidFileURL() {
+        let expect = expectation(description: "fileDownload")
+
+        let url = urlFor(path: "/hello")
+        let request = URLRequest(url: url)
+
+        let fileUrl = cacheURL(for: "foo/")
+
+        session.get(request, downloadTo: fileUrl) { result in
+            if let error = result.error {
+                switch error {
+                case .invalidDownloadURL(_):
+                    expect.fulfill()
+                default:
+                    XCTFail()
+                }
+            } else {
+                XCTFail()
+            }
+        }
         waitForExpectations(timeout: 4)
     }
 }
