@@ -80,7 +80,7 @@ class HTTPSessionTests: XCTestCase {
         let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 1)
 
         session.get(request) { result in
-            guard let _ = result.error() else {
+            guard let _ = result.error else {
                 XCTFail()
                 return
             }
@@ -95,7 +95,7 @@ class HTTPSessionTests: XCTestCase {
         let request = URLRequest(url: url)
 
         session.get(request) { result in
-            guard let response = result.response() else {
+            guard let response = result.response else {
                 XCTFail()
                 return
             }
@@ -111,11 +111,11 @@ class HTTPSessionTests: XCTestCase {
         let request = URLRequest(url: url)
 
         session.get(request) { result in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data() else {
+            guard let data = result.data else {
                 XCTFail()
                 return
             }
@@ -132,11 +132,11 @@ class HTTPSessionTests: XCTestCase {
         let request = URLRequest(url: url)
 
         session.head(request) { result in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data() else {
+            guard let data = result.data else {
                 XCTFail()
                 return
             }
@@ -153,11 +153,11 @@ class HTTPSessionTests: XCTestCase {
         let body = "fooBar".data(using: .utf8)!
 
         session.post(request, body: body) { (result) in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data() else {
+            guard let data = result.data else {
                 XCTFail()
                 return
             }
@@ -175,11 +175,11 @@ class HTTPSessionTests: XCTestCase {
         let body = "fooBar".data(using: .utf8)!
 
         session.put(request, body: body) { (result) in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data() else {
+            guard let data = result.data else {
                 XCTFail()
                 return
             }
@@ -196,11 +196,11 @@ class HTTPSessionTests: XCTestCase {
         let request = URLRequest(url: url)
 
         session.delete(request) { (result) in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data() else {
+            guard let data = result.data else {
                 XCTFail()
                 return
             }
@@ -232,11 +232,11 @@ class HTTPSessionTests: XCTestCase {
             downCount = totalBytesDownloaded
             downTotal = totalBytesToDownload
         }) { (result) in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data() else {
+            guard let data = result.data else {
                 XCTFail()
                 return
             }
@@ -261,11 +261,11 @@ class HTTPSessionTests: XCTestCase {
             downCount = totalBytesDownloaded
             downTotal = totalBytesToDownload
         }, completion: { result in
-            if let error = result.error() {
+            if let error = result.error {
                 XCTFail("\(error)")
                 return
             }
-            guard let data = result.data(), data.count > 0 else {
+            guard let data = result.data, data.count > 0 else {
                 XCTFail()
                 return
             }

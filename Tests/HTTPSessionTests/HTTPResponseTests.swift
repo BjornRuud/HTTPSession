@@ -42,7 +42,7 @@ class HTTPResponseTests: XCTestCase {
                 return .ok(.text(auth))
             } else {
                 let statusCode = HTTPStatusCode.unauthorized
-                return .raw(statusCode.rawValue, statusCode.text(), ["WWW-Authenticate": "Basic realm=\"simple\""], nil)
+                return .raw(statusCode.rawValue, statusCode.text, ["WWW-Authenticate": "Basic realm=\"simple\""], nil)
             }
         }
 
@@ -90,12 +90,11 @@ class HTTPResponseTests: XCTestCase {
         let request = URLRequest(url: url, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 1)
 
         session.get(request) { result in
-            if case .failure(_, let response, _) = result, let failResponse = response {
-                XCTAssertEqual(failResponse.statusCode, HTTPStatusCode.internalServerError.rawValue)
-                expect.fulfill()
-            } else {
+            guard let response = result.response, response.statusCode == HTTPStatusCode.internalServerError.rawValue else {
                 XCTFail()
+                return
             }
+            expect.fulfill()
         }
         waitForExpectations(timeout: 4)
     }

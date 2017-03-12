@@ -24,46 +24,83 @@
 
 import Foundation
 
-public enum HTTPError: Error {
+public enum HTTPSessionError: Error, CustomStringConvertible {
+    case data(Error)
+    case file(Error)
+    case http(HTTPURLResponse, Data)
     case noResponse
-    case clientError
-    case serverError
+    case task(Error)
+
+    public var description: String {
+        switch self {
+        case .data(let error):
+            return error.localizedDescription
+
+        case .file(let error):
+            return error.localizedDescription
+
+        case .http(let response, let data):
+            let text: String
+            if let code = HTTPStatusCode(rawValue: response.statusCode) {
+                text = code.text
+            } else {
+                text = "Unknown"
+            }
+            return "\(response.statusCode) \(text) (\(data.count) bytes)"
+
+        case .noResponse:
+            return "No response"
+
+        case .task(let error):
+            return error.localizedDescription
+        }
+    }
 }
 
 public enum HTTPMethod: String {
-    case get = "GET"
-    case head = "HEAD"
-    case post = "POST"
-    case put = "PUT"
+    case get    = "GET"
+    case head   = "HEAD"
+    case post   = "POST"
+    case put    = "PUT"
     case delete = "DELETE"
 }
 
 public enum HTTPResult {
-    case failure(Error, HTTPURLResponse?, Data?)
+    case failure(HTTPSessionError)
     case success(HTTPURLResponse, Data)
 
-    public func error() -> Error? {
+    public var error: Error? {
         switch self {
-        case .failure(let error, _, _):
+        case .failure(let error):
             return error
         case .success(_, _):
             return nil
         }
     }
 
-    public func response() -> HTTPURLResponse? {
+    public var response: HTTPURLResponse? {
         switch self {
-        case .failure(_, let response, _):
-            return response
+        case .failure(let sessionError):
+            switch sessionError {
+            case .http(let response, _):
+                return response
+            default:
+                return nil
+            }
         case .success(let response, _):
             return response
         }
     }
 
-    public func data() -> Data? {
+    public var data: Data? {
         switch self {
-        case .failure(_, _, let data):
-            return data
+        case .failure(let sessionError):
+            switch sessionError {
+            case .http(_, let data):
+                return data
+            default:
+                return nil
+            }
         case .success(_, let data):
             return data
         }
@@ -117,7 +154,7 @@ public enum HTTPStatusCode: Int {
     case gatewayTimeout              = 504
     case httpVersionNotSupported     = 505
 
-    public func text() -> String {
+    public var text: String {
         switch self {
         // 1xx
         case .continue:                    return "Continue"
@@ -299,32 +336,26 @@ extension HTTPSession: URLSessionTaskDelegate {
         }
 
         if let error = error {
-            handler.completion(.failure(error, nil, nil))
+            handler.completion(.failure(.task(error)))
             return
         }
 
         if let error = handler.error {
-            handler.completion(.failure(error, nil, nil))
+            handler.completion(.failure(error))
             return
         }
 
         guard let response = task.response as? HTTPURLResponse else {
-            handler.completion(.failure(HTTPError.noResponse, nil, nil))
+            handler.completion(.failure(.noResponse))
             return
         }
 
         let data = handler.data ?? Data()
 
-        if enableResponsePassthrough {
-            handler.completion(.success(response, data))
+        if !enableResponsePassthrough && 400 ..< 600 ~= response.statusCode {
+            handler.completion(.failure(.http(response, data)))
         } else {
-            if 400 ..< 500 ~= response.statusCode {
-                handler.completion(.failure(HTTPError.clientError, response, data))
-            } else if 500 ..< 600 ~= response.statusCode {
-                handler.completion(.failure(HTTPError.serverError, response, data))
-            } else {
-                handler.completion(.success(response, data))
-            }
+            handler.completion(.success(response, data))
         }
     }
 }
@@ -357,7 +388,7 @@ extension HTTPSession: URLSessionDownloadDelegate {
                 try FileManager.default.moveItem(at: location, to: fileUrl)
                 newLocation = fileUrl
             } catch let fileError {
-                handler.error = fileError
+                handler.error = .file(fileError)
                 return
             }
         }
@@ -367,7 +398,7 @@ extension HTTPSession: URLSessionDownloadDelegate {
         do {
             handler.data = try Data(contentsOf: newLocation, options: .alwaysMapped)
         } catch let dataError {
-            handler.error = dataError
+            handler.error = .data(dataError)
         }
     }
 
@@ -385,7 +416,7 @@ fileprivate final class TaskHandler {
     var downloadProgress: HTTPSession.DownloadProgress? = nil
     var data: Data? = nil
     var url: URL? = nil
-    var error: Error? = nil
+    var error: HTTPSessionError? = nil
 
     init(completion: @escaping HTTPSession.ResultCompletion) {
         self.completion = completion
